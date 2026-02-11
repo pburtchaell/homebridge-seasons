@@ -1,0 +1,29 @@
+{
+  "name": "@pburtchaell/homebridge-seasons",
+  "displayName": "Seasons",
+  "version": "1.0.0",
+  "description": "A plugin to display the current season of the year.",
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": [
+    "homebridge-plugin",
+    "season",
+    "seasons"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "homebridge": ">=1.0.0"
+  },
+  "author": {
+    "name": "Arne Blumentritt"
+  },
+  "contributors": [
+    {
+      "name": "pburtchaell"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pburtchaell/homebridge-seasons.git"
+  }
+}
