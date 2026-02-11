@@ -6,6 +6,20 @@ const CustomUUID = {
   SeasonNameCharacteristic: "02e4c0e3-44f9-44b8-8667-98f54b376ce4",
 };
 
+const Seasons = {
+  Spring: "Spring",
+  Summer: "Summer",
+  Autumn: "Autumn",
+  Winter: "Winter",
+};
+
+const SeasonNumber = {
+  [Seasons.Spring]: 0,
+  [Seasons.Summer]: 1,
+  [Seasons.Autumn]: 2,
+  [Seasons.Winter]: 3,
+};
+
 let Service;
 let Characteristic;
 let SeasonService;
@@ -117,71 +131,35 @@ class SeasonsAccessory {
   }
 
   getCurrentSeason(callback) {
-    this.getCurrentSeasonName((error, result) => {
-      let season;
-
-      switch (result) {
-        case "Spring":
-          season = 0;
-          break;
-        case "Summer":
-          season = 1;
-          break;
-        case "Autumn":
-          season = 2;
-          break;
-        case "Winter":
-          season = 3;
-          break;
-        default:
-          this.log.error("Unknown season " + result);
-          break;
-      }
-
-      callback(null, season);
+    this.getCurrentSeasonName((error, name) => {
+      callback(null, SeasonNumber[name]);
     });
   }
 
   getCurrentSeasonName(callback) {
-    let seasonName;
+    let season;
 
     if (this.calendar === "meteorologic") {
       this.log.debug("Using meteorologic calendar to get current season");
-      const month = new Date().getMonth() + 1;
-
-      switch (month) {
-        case 12:
-        case 1:
-        case 2:
-          seasonName = "Winter";
-          break;
-        case 3:
-        case 4:
-        case 5:
-          seasonName = "Spring";
-          break;
-        case 6:
-        case 7:
-        case 8:
-          seasonName = "Summer";
-          break;
-        case 9:
-        case 10:
-        case 11:
-          seasonName = "Autumn";
-          break;
-      }
+      season = this.getMeteorologicSeason(new Date());
     } else {
       this.log.debug("Using astronomic calendar to get current season");
-
       const northernHemisphere = this.hemisphere === "north";
       this.log.debug("Hemisphere is " + (northernHemisphere ? "north" : "south"));
-
-      seasonName = this.getAstronomicSeason(new Date(), northernHemisphere);
+      season = this.getAstronomicSeason(new Date(), northernHemisphere);
     }
 
-    this.log.debug("Current season is " + seasonName);
-    callback(null, seasonName);
+    this.log.debug("Current season is " + season);
+    callback(null, season);
+  }
+
+  getMeteorologicSeason(date) {
+    const month = date.getMonth() + 1;
+
+    if (month >= 3 && month <= 5) return Seasons.Spring;
+    if (month >= 6 && month <= 8) return Seasons.Summer;
+    if (month >= 9 && month <= 11) return Seasons.Autumn;
+    return Seasons.Winter;
   }
 
   /**
@@ -196,33 +174,26 @@ class SeasonsAccessory {
     const month = date.getMonth() + 1;
     const day = date.getDate();
 
-    // Calculate day of year equivalent for comparison
-    // Using month and day to determine which season we're in
     let season;
 
     if ((month === 3 && day >= 20) || month === 4 || month === 5 || (month === 6 && day < 21)) {
-      // Spring: March 20 - June 20
-      season = "Spring";
+      season = Seasons.Spring;
     } else if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day < 22)) {
-      // Summer: June 21 - September 21
-      season = "Summer";
+      season = Seasons.Summer;
     } else if ((month === 9 && day >= 22) || month === 10 || month === 11 || (month === 12 && day < 21)) {
-      // Autumn: September 22 - December 20
-      season = "Autumn";
+      season = Seasons.Autumn;
     } else {
-      // Winter: December 21 - March 19
-      season = "Winter";
+      season = Seasons.Winter;
     }
 
-    // Reverse seasons for southern hemisphere
     if (!northernHemisphere) {
-      const seasonMap = {
-        Spring: "Autumn",
-        Summer: "Winter",
-        Autumn: "Spring",
-        Winter: "Summer",
+      const opposite = {
+        [Seasons.Spring]: Seasons.Autumn,
+        [Seasons.Summer]: Seasons.Winter,
+        [Seasons.Autumn]: Seasons.Spring,
+        [Seasons.Winter]: Seasons.Summer,
       };
-      season = seasonMap[season];
+      season = opposite[season];
     }
 
     return season;
