@@ -1,0 +1,8 @@
+{
+  "watch": ["index.js"],
+  "exec": "homebridge -U ./test/homebridge -D",
+  "signal": "SIGTERM",
+  "env": {
+    "NODE_OPTIONS": "--trace-warnings"
+  }
+}

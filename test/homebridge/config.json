@@ -1,0 +1,17 @@
+{
+  "bridge": {
+    "name": "SeasonsDevBridge",
+    "username": "AA:BB:CC:DD:EE:FF",
+    "port": 51826,
+    "pin": "031-45-154"
+  },
+  "platforms": [
+    {
+      "name": "Seasons",
+      "platform": "Seasons",
+      "calendar": "meteorologic",
+      "hemisphere": "north",
+      "display": "both"
+    }
+  ]
+}

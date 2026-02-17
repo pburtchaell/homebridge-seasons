@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.homebridge/
+test/homebridge/persist/
+test/homebridge/accessories/
+.github/
+.claude/
+.cursor/
