@@ -61,7 +61,12 @@ function createHomebridgeMock() {
   let PlatformClass = null;
 
   return {
-    hap: { Service: MockService, Characteristic: MockCharacteristic },
+    hap: {
+      Service: MockService,
+      Characteristic: MockCharacteristic,
+      Formats: { UINT8: "uint8", STRING: "string" },
+      Perms: { READ: "pr", NOTIFY: "ev" },
+    },
     registerPlatform(id, name, cls) {
       PlatformClass = cls;
     },

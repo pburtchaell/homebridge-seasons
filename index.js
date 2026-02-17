@@ -22,6 +22,8 @@ const SeasonNumber = {
 
 let Service;
 let Characteristic;
+let Formats;
+let Perms;
 let SeasonService;
 let SeasonCharacteristic;
 let SeasonNameCharacteristic;
@@ -29,6 +31,8 @@ let SeasonNameCharacteristic;
 module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
+  Formats = homebridge.hap.Formats;
+  Perms = homebridge.hap.Perms;
 
   // Custom Season Service
   SeasonService = class extends Service {
@@ -42,11 +46,11 @@ module.exports = function (homebridge) {
     constructor() {
       super("Season", CustomUUID.SeasonCharacteristic);
       this.setProps({
-        format: Characteristic.Formats.UINT8,
+        format: Formats.UINT8,
         maxValue: 3,
         minValue: 0,
         minStep: 1,
-        perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY],
+        perms: [Perms.READ, Perms.NOTIFY],
       });
       this.value = this.getDefaultValue();
     }
@@ -57,8 +61,8 @@ module.exports = function (homebridge) {
     constructor() {
       super("Season Name", CustomUUID.SeasonNameCharacteristic);
       this.setProps({
-        format: Characteristic.Formats.STRING,
-        perms: [Characteristic.Perms.READ, Characteristic.Perms.NOTIFY],
+        format: Formats.STRING,
+        perms: [Perms.READ, Perms.NOTIFY],
       });
       this.value = this.getDefaultValue();
     }

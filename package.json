@@ -12,7 +12,7 @@
   ],
   "engines": {
     "node": ">=20.0.0",
-    "homebridge": ">=1.0.0"
+    "homebridge": "^1.6.0 || ^2.0.0-beta.0"
   },
   "author": {
     "name": "Patrick Burtchaell <patrick@pburtchaell.com> (pburtchaell.com)"
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.0.0",
-    "homebridge": "^1.0.0",
+    "homebridge": "^2.0.0-beta.0",
     "husky": "^9.1.7",
     "nodemon": "^3.0.0",
     "vitest": "^3.0.0"
