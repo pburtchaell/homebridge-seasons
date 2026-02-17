@@ -14,7 +14,7 @@ module.exports = function (homebridge) {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
 
-  homebridge.registerPlatform("@pburtchaell/homebridge-seasons", "Seasons", SeasonsPlatform);
+  homebridge.registerPlatform("@pburtchaell/homebridge-seasons", "Homebridge Seasons", SeasonsPlatform);
 };
 
 class SeasonsPlatform {

@@ -99,7 +99,7 @@ require("../index")(mock);
 
 function createAccessories(config = {}) {
   const defaults = {
-    platform: "Seasons",
+    platform: "Homebridge Seasons",
     hemisphere: "north",
   };
   const log = Object.assign(() => {}, { debug() {} });

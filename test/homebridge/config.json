@@ -8,7 +8,7 @@
   "platforms": [
     {
       "name": "Seasons",
-      "platform": "Seasons",
+      "platform": "Homebridge Seasons",
       "calendar": "meteorologic",
       "hemisphere": "north",
       "display": "both"
