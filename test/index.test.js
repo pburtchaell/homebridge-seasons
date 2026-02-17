@@ -157,7 +157,7 @@ describe("Astronomic seasons (northern hemisphere)", () => {
   for (const [month, day, expected] of cases) {
     it(`${month}/${day} → ${expected}`, () => {
       expect(accessory.getAstronomicSeason(date(month, day), true)).toBe(
-        expected
+        expected,
       );
     });
   }
@@ -186,7 +186,7 @@ describe("Astronomic seasons (southern hemisphere)", () => {
   for (const [month, day, expected] of cases) {
     it(`${month}/${day} → ${expected}`, () => {
       expect(accessory.getAstronomicSeason(date(month, day), false)).toBe(
-        expected
+        expected,
       );
     });
   }

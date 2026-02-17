@@ -156,9 +156,9 @@ class SeasonsAccessory {
   getMeteorologicSeason(date) {
     const month = date.getMonth() + 1;
 
-    if (month >= 3 && month <= 5) return Seasons.Spring;
-    if (month >= 6 && month <= 8) return Seasons.Summer;
-    if (month >= 9 && month <= 11) return Seasons.Autumn;
+    if (month >= 3 && month <= 5) { return Seasons.Spring; }
+    if (month >= 6 && month <= 8) { return Seasons.Summer; }
+    if (month >= 9 && month <= 11) { return Seasons.Autumn; }
     return Seasons.Winter;
   }
 

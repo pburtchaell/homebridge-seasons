@@ -11,7 +11,7 @@
     "seasons"
   ],
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "homebridge": ">=1.0.0"
   },
   "author": {
@@ -19,7 +19,8 @@
   },
   "scripts": {
     "test": "vitest run",
-    "prepublishOnly": "npm test",
+    "lint": "eslint . --max-warnings=0",
+    "prepublishOnly": "npm run lint && npm test",
     "prepare": "husky",
     "dev": "npm link && nodemon"
   },
@@ -28,6 +29,8 @@
     "url": "git://github.com/pburtchaell/homebridge-seasons.git"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
     "homebridge": "^1.0.0",
     "husky": "^9.1.7",
     "nodemon": "^3.0.0",
