@@ -2,7 +2,7 @@
   "private": false,
   "name": "@pburtchaell/homebridge-seasons",
   "displayName": "Homebridge Seasons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Homebridge plugin to display the current season of the year as HomeKit contact sensors",
   "license": "MIT",
   "main": "index.js",
