@@ -1,11 +1,17 @@
 {
   "pluginAlias": "Homebridge Seasons",
   "pluginType": "platform",
+  "headerDisplay": "Displays the current season of the year as HomeKit contact sensors",
   "singular": true,
   "schema": {
     "type": "object",
-    "required": ["hemisphere"],
+    "required": ["name", "hemisphere"],
     "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "Homebridge Seasons"
+      },
       "hemisphere": {
         "title": "Hemisphere",
         "type": "string",
