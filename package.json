@@ -1,4 +1,5 @@
 {
+  "private": false,
   "name": "@pburtchaell/homebridge-seasons",
   "displayName": "Seasons",
   "version": "0.0.1",
