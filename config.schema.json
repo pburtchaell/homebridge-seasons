@@ -1,26 +1,10 @@
 {
-  "pluginAlias": "Seasons",
+  "pluginAlias": "Homebridge Seasons",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
-      "name": {
-        "title": "Name",
-        "type": "string",
-        "default": "Seasons",
-        "required": true
-      },
-      "calendar": {
-        "title": "Calendar",
-        "type": "string",
-        "default": "meteorologic",
-        "description": "Astronomic uses the solstices and equinoxes for precise seasonal dates, while meteorologic uses fixed months like Dec-Feb for Winter, Mar-May for Spring, etc.",
-        "oneOf": [
-          { "title": "Meteorologic", "enum": ["meteorologic"] },
-          { "title": "Astronomic", "enum": ["astronomic"] }
-        ]
-      },
       "hemisphere": {
         "title": "Hemisphere",
         "type": "string",
@@ -30,15 +14,11 @@
           { "title": "Southern", "enum": ["south"] }
         ]
       },
-      "display": {
-        "title": "Display",
-        "type": "string",
-        "default": "both",
-        "oneOf": [
-          { "title": "Both (number and name)", "enum": ["both"] },
-          { "title": "Number only", "enum": ["number"] },
-          { "title": "Name only", "enum": ["name"] }
-        ]
+      "useAstronomicCalendar": {
+        "title": "Use astronomic calendar",
+        "type": "boolean",
+        "default": false,
+        "description": "When turned on, the plugin uses the solstices and equinoxes for precise seasonal dates. When turned off, the plugin uses fixed months like Dec-Feb for winter and Mar-May for spring."
       }
     }
   }

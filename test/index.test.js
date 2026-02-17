@@ -28,6 +28,10 @@ function createHomebridgeMock() {
   MockCharacteristic.Model = "model";
   MockCharacteristic.SerialNumber = "serialnumber";
   MockCharacteristic.FirmwareRevision = "firmwarerevision";
+  MockCharacteristic.ContactSensorState = {
+    CONTACT_DETECTED: 0,
+    CONTACT_NOT_DETECTED: 1,
+  };
 
   class MockService {
     constructor(displayName, uuid, subtype) {
@@ -45,6 +49,12 @@ function createHomebridgeMock() {
       if (this._characteristics.has(key)) {
         return this._characteristics.get(key);
       }
+      // For ContactSensorState, return a new mock characteristic
+      if (key === MockCharacteristic.ContactSensorState) {
+        const char = new MockCharacteristic("Contact Sensor State", "0000006A-0000-1000-8000-0026BB765291");
+        this._characteristics.set(key, char);
+        return char;
+      }
       return this;
     }
     setCharacteristic() {
@@ -55,6 +65,12 @@ function createHomebridgeMock() {
   MockService.AccessoryInformation = class extends MockService {
     constructor() {
       super("Accessory Information", "0000003E-0000-1000-8000-0026BB765291");
+    }
+  };
+
+  MockService.ContactSensor = class extends MockService {
+    constructor(displayName) {
+      super(displayName, "00000080-0000-1000-8000-0026BB765291");
     }
   };
 
@@ -81,21 +97,23 @@ function createHomebridgeMock() {
 const mock = createHomebridgeMock();
 require("../index")(mock);
 
-function createAccessory(config = {}) {
+function createAccessories(config = {}) {
   const defaults = {
-    name: "Seasons",
     platform: "Seasons",
-    calendar: "meteorologic",
     hemisphere: "north",
-    display: "both",
   };
   const log = Object.assign(() => {}, { debug() {} });
   const platform = new mock.PlatformClass(log, { ...defaults, ...config });
-  let accessory;
+  let accessories;
   platform.accessories((accs) => {
-    accessory = accs[0];
+    accessories = accs;
   });
-  return accessory;
+  return accessories;
+}
+
+function getAccessory(config, seasonName) {
+  const accessories = createAccessories(config);
+  return accessories.find(a => a.seasonName === seasonName);
 }
 
 function date(month, day) {
@@ -104,8 +122,63 @@ function date(month, day) {
 
 // --- Tests ---
 
+describe("Platform", () => {
+  it("creates exactly 4 accessories", () => {
+    const accessories = createAccessories();
+    expect(accessories).toHaveLength(4);
+  });
+
+  it("creates one accessory per season", () => {
+    const accessories = createAccessories();
+    const names = accessories.map(a => a.seasonName);
+    expect(names).toEqual(["Spring", "Summer", "Fall", "Winter"]);
+  });
+
+  it("each accessory has a ContactSensor service", () => {
+    const accessories = createAccessories();
+    for (const accessory of accessories) {
+      const services = accessory.getServices();
+      const contactSensor = services.find(
+        s => s instanceof mock.hap.Service.ContactSensor,
+      );
+      expect(contactSensor).toBeDefined();
+    }
+  });
+});
+
+describe("Contact sensor state", () => {
+  it("current season returns CONTACT_NOT_DETECTED, others return CONTACT_DETECTED", () => {
+    const accessories = createAccessories();
+    // Determine the current meteorologic season
+    const month = new Date().getMonth() + 1;
+    let currentSeason;
+    if (month >= 3 && month <= 5) {
+      currentSeason = "Spring";
+    } else if (month >= 6 && month <= 8) {
+      currentSeason = "Summer";
+    } else if (month >= 9 && month <= 11) {
+      currentSeason = "Fall";
+    } else {
+      currentSeason = "Winter";
+    }
+
+    return Promise.all(accessories.map(accessory => {
+      return new Promise((resolve) => {
+        accessory.getContactState((err, state) => {
+          if (accessory.seasonName === currentSeason) {
+            expect(state).toBe(1); // CONTACT_NOT_DETECTED
+          } else {
+            expect(state).toBe(0); // CONTACT_DETECTED
+          }
+          resolve();
+        });
+      });
+    }));
+  });
+});
+
 describe("Meteorologic seasons", () => {
-  const accessory = createAccessory({ calendar: "meteorologic" });
+  const accessory = getAccessory({}, "Spring");
 
   const cases = [
     [1, "Winter"],
@@ -116,9 +189,9 @@ describe("Meteorologic seasons", () => {
     [6, "Summer"],
     [7, "Summer"],
     [8, "Summer"],
-    [9, "Autumn"],
-    [10, "Autumn"],
-    [11, "Autumn"],
+    [9, "Fall"],
+    [10, "Fall"],
+    [11, "Fall"],
     [12, "Winter"],
   ];
 
@@ -130,10 +203,10 @@ describe("Meteorologic seasons", () => {
 });
 
 describe("Astronomic seasons (northern hemisphere)", () => {
-  const accessory = createAccessory({
-    calendar: "astronomic",
+  const accessory = getAccessory({
+    useAstronomicCalendar: true,
     hemisphere: "north",
-  });
+  }, "Spring");
 
   const cases = [
     // Spring equinox boundary (Mar 20)
@@ -144,19 +217,19 @@ describe("Astronomic seasons (northern hemisphere)", () => {
     [6, 20, "Spring"],
     [6, 21, "Summer"],
     [6, 22, "Summer"],
-    // Autumn equinox boundary (Sep 22)
+    // Fall equinox boundary (Sep 22)
     [9, 21, "Summer"],
-    [9, 22, "Autumn"],
-    [9, 23, "Autumn"],
+    [9, 22, "Fall"],
+    [9, 23, "Fall"],
     // Winter solstice boundary (Dec 21)
-    [12, 20, "Autumn"],
+    [12, 20, "Fall"],
     [12, 21, "Winter"],
     [12, 22, "Winter"],
     // Mid-season checks
     [1, 15, "Winter"],
     [4, 15, "Spring"],
     [7, 15, "Summer"],
-    [10, 15, "Autumn"],
+    [10, 15, "Fall"],
   ];
 
   for (const [month, day, expected] of cases) {
@@ -169,20 +242,20 @@ describe("Astronomic seasons (northern hemisphere)", () => {
 });
 
 describe("Astronomic seasons (southern hemisphere)", () => {
-  const accessory = createAccessory({
-    calendar: "astronomic",
+  const accessory = getAccessory({
+    useAstronomicCalendar: true,
     hemisphere: "south",
-  });
+  }, "Spring");
 
   const cases = [
     // Hemisphere inversion: north season → opposite in south
     [1, 15, "Summer"],
-    [4, 15, "Autumn"],
+    [4, 15, "Fall"],
     [7, 15, "Winter"],
     [10, 15, "Spring"],
     // Boundaries also flip
     [3, 19, "Summer"],
-    [3, 20, "Autumn"],
+    [3, 20, "Fall"],
     [6, 21, "Winter"],
     [9, 22, "Spring"],
     [12, 21, "Summer"],
@@ -199,52 +272,17 @@ describe("Astronomic seasons (southern hemisphere)", () => {
 
 describe("Config integration", () => {
   it("applies default config values", () => {
-    const accessory = createAccessory({});
-    expect(accessory.calendar).toBe("meteorologic");
+    const accessory = getAccessory({}, "Spring");
     expect(accessory.hemisphere).toBe("north");
-    expect(accessory.display).toBe("both");
   });
 
-  it("getCurrentSeason returns number matching season name", () => {
-    return new Promise((resolve) => {
-      const accessory = createAccessory({ calendar: "meteorologic" });
-      accessory.getCurrentSeasonName((err, name) => {
-        accessory.getCurrentSeason((err2, number) => {
-          const seasonNumbers = { Spring: 0, Summer: 1, Autumn: 2, Winter: 3 };
-          expect(number).toBe(seasonNumbers[name]);
-          resolve();
-        });
-      });
-    });
-  });
-});
-
-describe("Display mode wiring", () => {
-  it("'both' registers number and name characteristics", () => {
-    const accessory = createAccessory({ display: "both" });
-    expect(accessory.seasonService._characteristics.size).toBe(2);
-
-    // Both should have get handlers
-    for (const [, char] of accessory.seasonService._characteristics) {
-      expect(typeof char._handlers.get).toBe("function");
-    }
+  it("uses meteorologic calendar by default", () => {
+    const accessory = getAccessory({}, "Spring");
+    expect(accessory.config.useAstronomicCalendar).toBeFalsy();
   });
 
-  it("'number' registers only the numeric characteristic", () => {
-    const accessory = createAccessory({ display: "number" });
-    expect(accessory.seasonService._characteristics.size).toBe(1);
-
-    const [, char] = [...accessory.seasonService._characteristics][0];
-    expect(char.UUID).toBe("9382ccde-6cab-42e7-877a-2df98b8d0b66");
-    expect(typeof char._handlers.get).toBe("function");
-  });
-
-  it("'name' registers only the name characteristic", () => {
-    const accessory = createAccessory({ display: "name" });
-    expect(accessory.seasonService._characteristics.size).toBe(1);
-
-    const [, char] = [...accessory.seasonService._characteristics][0];
-    expect(char.UUID).toBe("02e4c0e3-44f9-44b8-8667-98f54b376ce4");
-    expect(typeof char._handlers.get).toBe("function");
+  it("uses astronomic calendar when configured", () => {
+    const accessory = getAccessory({ useAstronomicCalendar: true }, "Spring");
+    expect(accessory.config.useAstronomicCalendar).toBe(true);
   });
 });

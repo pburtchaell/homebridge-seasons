@@ -1,44 +1,79 @@
 # homebridge-seasons
 [![npm](https://img.shields.io/npm/v/@pburtchaell/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons)
-[![npm](https://img.shields.io/npm/dt/@pburtchaell/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons)
-[![GitHub last commit](https://img.shields.io/github/last-commit/pburtchaell/homebridge-seasons.svg?style=flat-square)](https://github.com/pburtchaell/homebridge-seasons)
+[![downloads](https://img.shields.io/npm/dt/@pburtchaell/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-This is a plugin for [homebridge](https://github.com/homebridge/homebridge) that displays the current season of the year. You can download it via [npm](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons).
+Homebridge plugin that exposes the seasons of the year as HomeKit contact sensors for use in seasonal automations. 
 
-This project is a fork of the [original plugin](https://github.com/naofireblade/homebridge-seasons) by [Arne Blumentritt](https://github.com/naofireblade). Thanks to Arne for creating and maintaining this plugin.
+## Acknowledgement 
 
-Feel free to leave any feedback [here](https://github.com/pburtchaell/homebridge-seasons/issues).
+This project is a fork of the [homebridge-seasons](https://github.com/naofireblade/homebridge-seasons) by [Arne Blumentritt](https://github.com/naofireblade). Thanks to Arne for creating the original!
 
-## Features
+## Requirements
 
-- Meteorologic season
-- Astronomic season
-- Nothern and southern hemisphere
-- Number and name representation of the season
+- Node.js 20.0.0 or later
+- Homebridge 1.8.0 or later (including Homebridge 2.x)
 
 ## Installation
 
-1. Install homebridge using: `npm install -g homebridge`
-2. Install this plugin using: `npm install -g @pburtchaell/homebridge-seasons`
-3. Update your configuration file. See the samples below.
+### Using the Homebridge UI
+
+Search for `@pburtchaell/homebridge-seasons` in the Homebridge UI plugin search and install it.
+
+### Using npm
+
+```bash
+npm install -g @pburtchaell/homebridge-seasons
+```
 
 ## Configuration
 
-Add the following information to your config file.
+You can configure the plugin using the Homebridge UI or by editing your `config.json` directly.
 
-- You can choose between the *meteorologic* and *astronomic* **calendar**.
-- You can set your **hemisphere** between *north* and *south*.
-- And you can decide whether you want to **display** the season as a *number* (0 = Spring), a *name* or *both*. The number representation can be used in homekit rules.
-
+### Example configuration
 
 ```json
 "platforms": [
-	{
-		"platform": "Seasons",
-		"name": "Seasons",
-		"calendar": "meteorologic",
-		"hemisphere": "north",
-		"display": "both"
-	}
+    {
+        "platform": "Seasons",
+        "hemisphere": "north",
+        "useAstronomicCalendar": false
+    }
 ]
 ```
+
+### Configuration options
+
+| Option | Required | Default | Description |
+| --- | --- | --- | --- |
+| `platform` | Yes | — | Must be `"Seasons"`. |
+| `hemisphere` | No | `"north"` | `"north"` or `"south"`. Determines which hemisphere's seasons to use. |
+| `useAstronomicCalendar` | No | `false` | When enabled, uses solstices and equinoxes for precise seasonal dates. When disabled, uses fixed months (e.g., Dec-Feb for Winter, Mar-May for Spring). |
+
+## How it works
+
+The plugin creates four HomeKit contact sensors — one for each season (Spring, Summer, Fall, Winter). The sensor for the current season reports as "Open" while the other three report as "Closed". This makes it easy to build HomeKit automations that trigger on seasonal changes, for example adjusting lighting scenes or thermostat schedules.
+
+### Meteorologic calendar (default)
+
+Seasons are determined by fixed month ranges:
+
+| Season | Months |
+| --- | --- |
+| Spring | March – May |
+| Summer | June – August |
+| Fall | September – November |
+| Winter | December – February |
+
+### Astronomic calendar
+
+When `useAstronomicCalendar` is enabled, seasons are determined by approximate solstice and equinox dates:
+
+| Season | Start date |
+| --- | --- |
+| Spring | March 20 (Spring Equinox) |
+| Summer | June 21 (Summer Solstice) |
+| Fall | September 22 (Fall Equinox) |
+| Winter | December 21 (Winter Solstice) |
+
+If `hemisphere` is set to `"south"`, seasons are inverted (e.g., June is Winter instead of Summer).
