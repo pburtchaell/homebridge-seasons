@@ -4,6 +4,7 @@
   "singular": true,
   "schema": {
     "type": "object",
+    "required": ["hemisphere"],
     "properties": {
       "hemisphere": {
         "title": "Hemisphere",
