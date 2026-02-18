@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pburtchaell/homebridge-seasons.git"
+    "url": "git+https://github.com/pburtchaell/homebridge-seasons.git"
   },
   "homepage": "https://github.com/pburtchaell/homebridge-seasons",
   "bugs": {
