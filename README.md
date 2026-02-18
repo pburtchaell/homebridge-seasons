@@ -8,7 +8,6 @@ Homebridge plugin that exposes the seasons of the year as HomeKit contact sensor
 
 ## Acknowledgement 
 
-This project is a fork of [homebridge-seasons](https://github.com/naofireblade/homebridge-seasons) by [Arne Blumentritt](https://github.com/naofireblade). Thanks Arne for creating the original!
 
 ## Requirements
 
