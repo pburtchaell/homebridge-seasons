@@ -25,7 +25,13 @@ class SeasonsPlatform {
 
   accessories(callback) {
     const seasons = [Seasons.Spring, Seasons.Summer, Seasons.Fall, Seasons.Winter];
-    callback(seasons.map(name => new SeasonContactSensorAccessory(this, name)));
+    try {
+      const list = seasons.map(name => new SeasonContactSensorAccessory(this, name));
+      callback(list);
+    } catch (err) {
+      this.log.error("Failed to create accessories: %s", err.message);
+      callback([]);
+    }
   }
 }
 
@@ -55,8 +61,11 @@ class SeasonContactSensorAccessory {
   }
 
   identify(callback) {
-    this.log.debug("Identify requested for " + this.seasonName);
-    callback();
+    try {
+      this.log.debug("Identify requested for " + this.seasonName);
+    } finally {
+      callback();
+    }
   }
 
   getServices() {
@@ -64,22 +73,28 @@ class SeasonContactSensorAccessory {
   }
 
   getContactState(callback) {
-    let currentSeason;
+    try {
+      let currentSeason;
+      const date = new Date();
 
-    if (this.config.useAstronomicCalendar) {
-      const northernHemisphere = this.hemisphere === "north";
-      currentSeason = this.getAstronomicSeason(new Date(), northernHemisphere);
-    } else {
-      currentSeason = this.getMeteorologicSeason(new Date());
+      if (this.config && this.config.useAstronomicCalendar) {
+        const northernHemisphere = this.hemisphere === "north";
+        currentSeason = this.getAstronomicSeason(date, northernHemisphere);
+      } else {
+        currentSeason = this.getMeteorologicSeason(date);
+      }
+
+      this.log.debug(this.seasonName + " sensor: current season is " + currentSeason);
+
+      const isActive = currentSeason === this.seasonName;
+      callback(null, isActive
+        ? Characteristic.ContactSensorState.CONTACT_NOT_DETECTED
+        : Characteristic.ContactSensorState.CONTACT_DETECTED,
+      );
+    } catch (err) {
+      this.log.error("%s: getContactState failed: %s", this.seasonName, err.message);
+      callback(err);
     }
-
-    this.log.debug(this.seasonName + " sensor: current season is " + currentSeason);
-
-    const isActive = currentSeason === this.seasonName;
-    callback(null, isActive
-      ? Characteristic.ContactSensorState.CONTACT_NOT_DETECTED
-      : Characteristic.ContactSensorState.CONTACT_DETECTED,
-    );
   }
 
   getMeteorologicSeason(date) {
