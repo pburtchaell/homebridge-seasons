@@ -1,7 +1,7 @@
 # homebridge-seasons
 
-[![npm](https://img.shields.io/npm/v/@pburtchaell/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons)
-[![downloads](https://img.shields.io/npm/dt/@pburtchaell/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/@pburtchaell/homebridge-seasons)
+[![npm](https://img.shields.io/npm/v/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/homebridge-seasons)
+[![downloads](https://img.shields.io/npm/dt/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/homebridge-seasons)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 
 Homebridge plugin that exposes the seasons of the year as HomeKit contact sensors for use in seasonal automations. 
@@ -19,12 +19,12 @@ This project is a fork of [homebridge-seasons](https://github.com/naofireblade/h
 
 ### Using the Homebridge UI
 
-Search for `@pburtchaell/homebridge-seasons` in the Homebridge UI plugin search and install it.
+Search for `homebridge-seasons` in the Homebridge UI plugin search and install it.
 
 ### Using npm
 
 ```bash
-npm install -g @pburtchaell/homebridge-seasons
+npm install -g homebridge-seasons
 ```
 
 ## Configuration
