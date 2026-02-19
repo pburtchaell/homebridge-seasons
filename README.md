@@ -3,6 +3,7 @@
 [![npm](https://img.shields.io/npm/v/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/homebridge-seasons)
 [![downloads](https://img.shields.io/npm/dt/homebridge-seasons.svg?style=flat-square)](https://www.npmjs.com/package/homebridge-seasons)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
+[![verified-by-homebridge](https://img.shields.io/badge/homebridge-verified-blueviolet?color=%23491F59&style=flat-square)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
 
 Homebridge plugin that exposes the seasons of the year as HomeKit contact sensors for use in seasonal automations. 
 
