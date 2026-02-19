@@ -9,7 +9,7 @@ Homebridge plugin that exposes the seasons of the year as HomeKit contact sensor
 
 ## Acknowledgement 
 
-This project is a fork of [homebridge-seasons](https://github.com/naofireblade/homebridge-seasons), adding Homebridge UI configuration options and Homebridge 2.x support. It also updates the seasons to show in HomeKit as contact sensors for easy automation conditions. Thank you @naofireblade for creating the original code and for passing the original npm name on for this updated version.
+This project is a fork of the original homebridge-seasons by @naofireblade, adding Homebridge UI configuration options and Homebridge 2.x support. It also updates the seasons to show in HomeKit as contact sensors for easy automation conditions. Thank you @naofireblade for creating the original code and for passing the original npm name on for this updated version.
 
 ## Requirements
 
